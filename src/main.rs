@@ -52,6 +52,17 @@ impl<T: Copy + ops::Add<Output = T> + ops::Mul<Output = T> + ops::Div<Output = T
     }
 }
 
+impl<T: Copy + ops::Add<Output = T> + ops::Mul<Output = T> + ops::Div<Output = T>> ops::Div for Measure<T> {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self {
+        Self {
+            value: self.value / other.value,
+            error: (self.relative_error() + other.relative_error()) * (self.value * other.value)
+        }
+    }
+}
+
 fn main() {
     let m1 = Measure::<f32> {
         value: 10.58,
@@ -62,5 +73,5 @@ fn main() {
         error: 0.300
     };
 
-    println!("{}", m1 * m2);
+    println!("{}", m1 / m2);
 }
