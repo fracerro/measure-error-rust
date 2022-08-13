@@ -3,8 +3,8 @@ use std::fmt;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Measure<T> {
-    value: T,
-    error: T
+    pub value: T,
+    pub error: T
 }
 
 impl<T> Measure<T> where 
@@ -106,5 +106,6 @@ mod tests {
             error: 0.5
         };
         println!("{}", m / std::f32::consts::PI);
+        println!("{}", p / std::f32::consts::PI);
     }
 }
