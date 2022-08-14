@@ -1,7 +1,7 @@
 use std::ops;
 use std::fmt;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Measure<T> {
     pub value: T,
     pub error: T
@@ -91,6 +91,29 @@ impl<T> ops::Div<T> for Measure<T> where
     }
 }
 
+// ----------------
+
+// more measures of the same thing
+#[derive(Debug)]
+pub struct Dataset<T> {
+    data: Vec<Measure<T>>
+}
+
+impl<T> ops::Index<usize> for Dataset<T> {
+    type Output = Measure<T>;
+    fn index(&self, index: usize) -> &Measure<T> {
+        return &self.data[index];
+    }
+}
+
+impl<T> ops::IndexMut<usize> for Dataset<T> {
+    fn index_mut(&mut self, index: usize) -> &mut Measure<T> {
+        return &mut self.data[index];
+    }
+}
+
+// ----------------
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -107,5 +130,12 @@ mod tests {
         };
         println!("{}", m / std::f32::consts::PI);
         println!("{}", p / std::f32::consts::PI);
+
+        let mut prova: Dataset<f32> = Dataset {
+            data: Vec::from([m, p])
+        };
+        prova[0].error = 0.3;
+        println!("{}", prova[0]);
+        println!("{:?}", prova);
     }
 }
