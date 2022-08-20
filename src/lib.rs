@@ -94,7 +94,7 @@ impl<T> ops::Div<T> for Measure<T> where
 // ----------------
 
 // more measures of the same thing
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Dataset<T> {
     data: Vec<Measure<T>>
 }
@@ -110,6 +110,26 @@ impl<T> ops::IndexMut<usize> for Dataset<T> {
     fn index_mut(&mut self, index: usize) -> &mut Measure<T> {
         return &mut self.data[index];
     }
+}
+
+impl<T> Dataset<T> where 
+    T: Copy + ops::Add<T, Output = T> + ops::Div<usize, Output = T> {
+        fn len(&self) -> usize {
+            self.data.len()
+        }
+
+        fn avarage(&self) -> Option<T> {
+            if self.len() == 0 {
+                None
+            } else {
+                let mut sum: T = self[0].value;
+                for i in 1..self.len() {
+                    sum = sum + self[i].value;
+                }
+                
+                Some(sum / self.len())
+            }
+        }
 }
 
 // ----------------
